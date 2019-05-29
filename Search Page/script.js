@@ -3,57 +3,60 @@ Treehouse Techdegree:
 FSJS project 2 - List Filter and Pagination
 ******************************************/
 
-const ul = document.getElementsByClassName('student-item cf');
-const page = [];
-
-const showPage = (ul, page) => {
-  for (let i = 0; i < ul.length; i += 1) {
-    if (i < 10) {
-    ul[i].style.display = 'block';
-  } else {ul[i].style.display = 'none'}
+//Two global variables; stuList stores the different students info and perPage variable stores the page limeit for startIndex
+// those items
+const stuList = document.querySelectorAll('li');
+const perPage = 10;
+// showPage function passes the global varible stuList and the page varible that holds which page is being called
+const showPage = (stuList, page) => {
+// local varables manage which tudent items should be present in the page container
+  var startIndex = (page * perPage) - perPage;
+  var endIndex = page * perPage - 1;
+// the for loop cycles through the items to check which items should be in the disolay and hidden to the corresponding
+// page
+  for (let i = 0; i < stuList.length; i += 1) {
+    if (i >= startIndex && i <= endIndex) {
+      stuList[i].style.display = "block";
+  } else {
+    stuList[i].style.display = "none";
+  }
   }
   };
-
-showPage(ul,page);
-
-  // add agrument that new array schould be produced if other button is pressed
-/***
-   Create the `showPage` function to hide all of the items in the
-   list except for the ten you want to show.
-
-   Pro Tips:
-     - Keep in mind that with a list of 54 students, the last page
-       will only display four.
-     - Remember that the first student has an index of 0.
-     - Remember that a function `parameter` goes in the parens when
-       you initially define the function, and it acts as a variable
-       or a placeholder to represent the actual function `argument`
-       that will be passed into the parens later when you call or
-       "invoke" the function
-***/
-//Second argument in appendPageLinks is not really functionality
-//
-const appendPageLinks = (ul, page) => {
-    for (let i = 0; i < ul.length; i += 1) {
-      if (page.length < 10) {
-        page.push(ul[i]);
-      } else if (ul[i] == ul.lastElementChild) {
-        var listTag = document.getElementsByTagName('ul')[0];
-        var newBut = document.createElement("button");
-        newBut.appendChild(page);
-      } else {
-        var listTag = document.getElementsByTagName('ul')[0];
-        var newBut = document.createElement("button");
-        newBut.className = "pagination";
-        // var newBut = document.getElementsByClassName('pagination');
-        listTag.appendChild(newBut);
-        page = [];
-      }
-    }
+// This calls the function so that when the page loads initially it diplays items from the first page
+showPage(stuList, 1);
+// the appendPageLinks creates document elements for the items to be appended to and called on for display. It is also creates buttons a
+// button event lisener to respond to mouse clicking of the page symbols
+const appendPageLinks = (stuList) => {
+// Creates a unorderlist and a div labeled pagination and locates the page elements
+// the div is attached to the page html and the unorderedlist is attached to the div so that the items have something to attach when the
+//function wraps up
+  var page = document.querySelector('.page');
+  var ul = document.createElement('ul');
+  var div = document.createElement('div');
+  div.className = 'pagination';
+  page.appendChild(div);
+  div.appendChild(ul);
+// The pageTotal variable stores how many pages should be set aside for the complete list of students
+  var pageTotal = Math.ceil(stuList.length/perPage);
+// the for loop takes the number of pages that is stored in the pageTotal var and creates a list and anchor element to the student
+// list when the page icon is clicked and attaches them together and then to the unorderedlist
+  for (let i = 0; i < pageTotal; i += 1) {
+    var pageNum = i + 1;
+    let li = document.createElement('li');
+    let a = document.createElement('a');
+    a.textContent = pageNum;
+    a.href = "#";
+    li.appendChild(a);
+    ul.appendChild(li);
+  }
+  // Adds functions to the buttons to initiate the showpage function when clicked and display the correct roster of students stored in
+  // each page symbol
+  var a = document.querySelectorAll('a');
+  for(let i = 0; i < a.length; i += 1) {
+    a[i].addEventListener('click', () => {
+      showPage(stuList, a[i].textContent);
+  });
+  }
 };
-
-appendPageLinks(ul,page);
-/***
-   Create the `appendPageLinks function` to generate, append, and add
-   functionality to the pagination buttons.
-***/
+// calls the appendPageLinks function to initaite when the page is loaded 
+appendPageLinks(stuList);
