@@ -53,10 +53,19 @@ const appendPageLinks = (stuList) => {
   // each page symbol
   var a = document.querySelectorAll('a');
   for(let i = 0; i < a.length; i += 1) {
+    a[0].setAttribute('class','active');
     a[i].addEventListener('click', () => {
       showPage(stuList, a[i].textContent);
+      var highLit = event.target;
+      if ( highLit.tagName == 'A') {
+        var totAnchors = document.querySelectorAll('.pagination a');
+        for (let i = 0; i < totAnchors.length; i += 1) {
+          totAnchors[i].classList.remove('active');
+    }
+    event.target.setAttribute('class','active');
+  }
   });
   }
 };
-// calls the appendPageLinks function to initaite when the page is loaded 
+// calls the appendPageLinks function to initaite when the page is loaded
 appendPageLinks(stuList);
